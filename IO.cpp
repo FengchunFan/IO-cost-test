@@ -8,6 +8,8 @@ using Type = long long;
 
 int main(int argc, char* argv[]) {
   size_t n = 1e9;
+  size_t k = 5;
+  size_t m = 1e4;
   int num_rounds = 3;
   if (argc >= 2) {
     n = atoll(argv[1]);
@@ -21,11 +23,10 @@ int main(int argc, char* argv[]) {
   Type* B = (Type*)malloc(n * sizeof(Type));
   parlay::parallel_for(0, n, [&](size_t i) { B[i] = i; });
 
-
   double total_time_1 = 0;
-  for (int i = 0; i < num_rounds; i++) {
+  for (int round = 0; round < num_rounds; round++) {
     parlay::timer t;
-    parlay::parallel_for(0, n, [&](size_t i) { A[i] *= 10; });
+    parlay::parallel_for(0, (long long) n * k, [&](size_t i) { A[( long long ) i%n] ++; });
     t.stop();
 
     std::cout << "Round " << i << " function 1 running time: " << t.total_time() << std::endl;
@@ -33,9 +34,15 @@ int main(int argc, char* argv[]) {
   }
 
   double total_time_2 = 0;
-  for (int i = 0; i < num_rounds; i++) {
+  for (int round = 0; round < num_rounds; round++) {
     parlay::timer t;
-    parlay::parallel_for(0, n, [&](size_t i) { B[(( long long )i *93) %n] *= 10; });
+    parlay::parallel_for(0, n/m, [&](size_t i) { 
+      for (size_t l = 0; l < k; l++){
+        for (size_t j = i * m; j < (i + 1) * m; j++){
+          B[j]++;
+        }
+      }
+    });
     t.stop();
 
     std::cout << "Round " << i << " function 2 running time: " << t.total_time() << std::endl;
