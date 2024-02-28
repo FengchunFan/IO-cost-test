@@ -8,6 +8,8 @@ using Type = long long;
 
 int main(int argc, char* argv[]) {
   size_t n = 1e9;
+  size_t k = 5;
+  size_t m = 1e4;
   int num_rounds = 3;
   if (argc >= 2) {
     n = atoll(argv[1]);
@@ -18,9 +20,8 @@ int main(int argc, char* argv[]) {
 
   Type* A = (Type*)malloc(n * sizeof(Type));
   parlay::parallel_for(0, n, [&](size_t i) { A[i] = i; });
-  Type* B = (Type*)malloc(n * sizeof(Type));
-  parlay::parallel_for(0, n, [&](size_t i) { B[i] = i; });
-
+  Type* A = (Type*)malloc(n * sizeof(Type));
+  parlay::parallel_for(0, n, [&](size_t i) { A[i] = i; });
 
   double total_time_1 = 0;
   for (int i = 0; i < num_rounds; i++) {
@@ -35,7 +36,7 @@ int main(int argc, char* argv[]) {
   double total_time_2 = 0;
   for (int i = 0; i < num_rounds; i++) {
     parlay::timer t;
-    parlay::parallel_for(0, n, [&](size_t i) { B[(( long long )i *93) %n] *= 10; });
+    parlay::parallel_for(0, n, [&](size_t i) { A[(( long long )i *93) %n] *= 10; });
     t.stop();
 
     std::cout << "Round " << i << " function 2 running time: " << t.total_time() << std::endl;
