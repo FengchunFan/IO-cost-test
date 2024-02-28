@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
     parlay::parallel_for(0, (long long) n * k, [&](size_t i) { A[( long long ) i%n] ++; });
     t.stop();
 
-    std::cout << "Round " << i << " function 1 running time: " << t.total_time() << std::endl;
+    std::cout << "Round " << round << " function 1 running time: " << t.total_time() << std::endl;
     total_time_1 += t.total_time();
   }
 
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
     });
     t.stop();
 
-    std::cout << "Round " << i << " function 2 running time: " << t.total_time() << std::endl;
+    std::cout << "Round " << round << " function 2 running time: " << t.total_time() << std::endl;
     total_time_2 += t.total_time();
   }
 
